@@ -25,10 +25,6 @@
           ref="playlistCover"
         ></div>
       </div>
-      <div class="col-6">
-        <h5>Output</h5>
-        <img :src="output" alt="" class="playlist-cover">
-      </div>
     </div>
   </div>
 </template>
@@ -66,14 +62,13 @@ export default {
     },
     async printPlaylistCover () {
       const el = this.$refs.playlistCover;
-      // add option type to get the image version
-      // if not provided the promise will return
-      // the canvas.
-      const options = {
-        type: 'dataURL'
-      }
 
-      this.output = await this.$html2canvas(el, options);
+      const canvas = await this.$html2canvas(el);
+
+      const a = document.createElement('a');
+      a.href = canvas.toDataURL('image/jpeg').replace('image/jpeg', 'image/octet-stream');
+      a.download = 'playlist-cover.jpg';
+      a.click();
     }
   }
 }

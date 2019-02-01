@@ -36,14 +36,21 @@ export default {
     return {
       background: '',
       backgroundName: 'Selecionar',
+      publicPath: process.env.BASE_URL,
       titleText: '',
       output: null
     }
   },
   computed: {
     customStyles () {
+      const border = `url("${this.publicPath}assets/border.png")`;
+
+      const gradient = 'linear-gradient(transparent, rgba(0,0,0,.3), transparent)';
+
+      const background = `url(${this.background})`;
+
       return {
-        'background-image': `url(${this.background})`
+        'background-image': `${border}, ${gradient}, ${background}`
       };
     }
   },
@@ -58,6 +65,7 @@ export default {
       const file = target.files[0];
 
       this.background = URL.createObjectURL(file);
+
       this.backgroundName = file.name;
     },
     async printPlaylistCover () {

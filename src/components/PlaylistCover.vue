@@ -12,6 +12,17 @@
       </div>
     </div>
     <div class="form-group">
+      <label for="frame">Borda</label>
+      <select class="custom-select" name="frame" id="frame" v-model="selectedFrame">
+        <option
+          v-for="(frame, index) in frames"
+          :key="index"
+          :value="frame.path"
+          :label="frame.label"
+        ></option>
+      </select>
+    </div>
+    <div class="form-group">
       <button class="btn btn-primary" type="button" @click="printPlaylistCover">Gerar</button>
     </div>
     <div class="playlist-data row my-3" id="playlist-data">
@@ -38,12 +49,20 @@ export default {
       backgroundName: 'Selecionar',
       publicPath: process.env.BASE_URL,
       titleText: '',
-      output: null
+      output: null,
+      frames: [
+        { label: 'Borda 1', path: 'border-1.png' },
+        { label: 'Borda 2', path: 'border-2.png' },
+        { label: 'Borda 3', path: 'border-3.png' },
+        { label: 'Borda 4', path: 'border-4.png' },
+        { label: 'Borda 5', path: 'border-5.png' }
+      ],
+      selectedFrame: 'border-1.png'
     }
   },
   computed: {
     customStyles () {
-      const border = `url("${this.publicPath}assets/border.png")`;
+      const border = `url("${this.publicPath}assets/${this.selectedFrame}")`;
 
       const gradient = 'linear-gradient(transparent, rgba(0,0,0,.3), transparent)';
 

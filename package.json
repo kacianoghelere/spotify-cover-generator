@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "vue": "^2.5.21",
-    "vue-html2canvas": "^0.0.4"
+    "vue-html2canvas": "^0.0.4",
+    "webfontloader": "^1.6.28"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.3.0",

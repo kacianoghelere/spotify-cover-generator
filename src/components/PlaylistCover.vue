@@ -146,15 +146,16 @@
       }
     },
     computed: {
+      borderStyle () {
+        return `url("../assets/${this.selectedFrame}")`
+      },
       customStyles () {
-        const border = `url("${this.publicPath}assets/${this.selectedFrame}")`;
-
         const gradient = 'linear-gradient(transparent, rgba(0,0,0,.30), rgba(0,0,0,.30), transparent)';
 
         const background = `url(${this.background})`;
 
         return {
-          'background-image': `${border}, ${gradient}, ${background}`,
+          'background-image': `${this.borderStyle}, ${gradient}, ${background}`,
           'background-position': `${this.backgroundHorizontalAxis}%`,
           'color': `${this.selectedFontColor}`,
           'font-family': `${this.selectedFont}`,

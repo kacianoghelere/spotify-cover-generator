@@ -1,19 +1,24 @@
 <template>
-  <div class="row justify-content-center mt-3">
+  <div class="row justify-content-center mt-3 cover-generator">
     <div class="col-12 col-md-4">
-      <h5>Configuração</h5>
+      <h5 class="text-dark">Configuração</h5>
       <div class="form-group">
-        <label class="text-muted" for="background">Imagem da capa</label>
+        <Label for="background-file" text="Imagem da capa" />
         <div class="custom-file">
-          <input type="file" class="custom-file-input" id="backgroundFile" @change="changeBackground">
-          <label class="custom-file-label" for="backgroundFile">{{ backgroundName }}</label>
+          <input
+            class="custom-file-input"
+            type="file"
+            id="background-file"
+            @change="changeBackground"
+          />
+          <label class="custom-file-label" for="background-file">{{ backgroundName }}</label>
         </div>
       </div>
       <div class="form-group">
-        <label class="text-muted" for="background-horizontal-axis">Posição X da imagem</label>
+        <Label for="background-horizontal-axis" text="Posição X da imagem" />
         <input
-          type="range"
           class="custom-range"
+          type="range"
           min="0"
           max="100"
           step="1"
@@ -22,23 +27,39 @@
         />
       </div>
       <div class="form-group">
-        <label class="text-muted" for="titleText">Texto da capa</label>
-        <textarea class="form-control" placeholder="Texto" id="titleText" v-model="titleText"></textarea>
+        <Label for="title-text" text="Texto da capa" />
+        <textarea
+          class="form-control"
+          placeholder="Texto"
+          id="title-text"
+          v-model="titleText"
+        ></textarea>
       </div>
       <div class="form-group">
-        <label class="text-muted" for="font">Fonte do Texto</label>
-        <select class="custom-select" name="font" id="font" :value="selectedFont" @change="selectFont">
+        <Label for="font-family" text="Fonte do Texto" />
+        <select
+          class="custom-select"
+          name="font-family"
+          id="font-family"
+          :value="selectedFont"
+          @change="selectFont"
+        >
           <option
             v-for="(font, index) in fonts"
             :key="index"
-            :value="font.path"
-            :label="font.label"
+            :value="font"
+            :label="font"
           ></option>
         </select>
       </div>
       <div class="form-group">
-        <label class="text-muted" for="font-size">Tamanho da Fonte</label>
-        <select class="custom-select" name="font-size" id="font-size" v-model="selectedFontSize">
+        <Label for="font-size" text="Tamanho da Fonte" />
+        <select
+          class="custom-select"
+          name="font-size"
+          id="font-size"
+          v-model="selectedFontSize"
+        >
           <option
             v-for="(size, index) in fontSizes"
             :key="index"
@@ -48,12 +69,22 @@
         </select>
       </div>
       <div class="form-group">
-        <label class="text-muted" for="font-size">Cor da Fonte</label>
-        <input class="form-control" type="color" v-model="selectedFontColor" />
+        <Label for="font-color" text="Cor da Fonte" />
+        <input
+          class="form-control"
+          type="color"
+          id="font-color"
+          v-model="selectedFontColor"
+        />
       </div>
       <div class="form-group">
-        <label class="text-muted" for="frame">Borda</label>
-        <select class="custom-select" name="frame" id="frame" v-model="selectedFrame">
+        <Label for="background-frame" text="Borda" />
+        <select
+          class="custom-select"
+          name="background-frame"
+          id="background-frame"
+          v-model="selectedFrame"
+        >
           <option
             v-for="(frame, index) in frames"
             :key="index"
@@ -63,12 +94,30 @@
         </select>
       </div>
       <div class="form-group">
-        <button class="btn btn-primary" type="button" @click="printPlaylistCover">Gerar</button>
+        <Label for="background-shadow" text="Opacidade da sombra sobre o fundo" />
+        <input
+          class="custom-range"
+          type="range"
+          :min="0"
+          :max="0.5"
+          :step="0.1"
+          id="background-shadow"
+          v-model="backgroundShadowOpacity"
+        />
+      </div>
+      <div class="form-group">
+        <button
+          class="btn btn-primary btn-lg btn-block"
+          type="button"
+          @click="printPlaylistCover"
+        >
+          <strong>Gerar</strong>
+        </button>
       </div>
     </div>
     <div class="col-12 col-md-6 mt-3 mt-md-0">
       <div class="playlist-data" id="playlist-data">
-        <h5>Preview</h5>
+        <h5 class="text-dark">Preview</h5>
         <div
           class="playlist-cover"
           id="playlist-cover"
@@ -84,48 +133,24 @@
 <script>
   import WebFont from 'webfontloader';
 
+  import fonts from './font-types';
+  import Label from './Label.vue';
+
   export default {
     name: 'PlaylistCover',
+    components: {
+      Label
+    },
     data () {
       return {
         background: '',
         backgroundHorizontalAxis: 50,
+        backgroundShadowOpacity: 0.3,
         backgroundVerticalAxis: 50,
         backgroundName: 'Selecionar',
-        publicPath: process.env.BASE_URL,
         titleText: '',
         output: null,
-        fonts: [
-          { label: 'Acme', path: 'Acme' },
-          { label: 'Aladin', path: 'Aladin' },
-          { label: 'Amethysta', path: 'Amethysta' },
-          { label: 'Amita', path: 'Amita' },
-          { label: 'Aref Ruqaa', path: 'Aref Ruqaa' },
-          { label: 'Bad Script', path: 'Bad Script' },
-          { label: 'Calligraffitti', path: 'Calligraffitti' },
-          { label: 'Cardo', path: 'Cardo' },
-          { label: 'Cinzel Decorative', path: 'Cinzel Decorative' },
-          { label: 'Cinzel', path: 'Cinzel' },
-          { label: 'Cormorant Infant', path: 'Cormorant Infant' },
-          { label: 'EB Garamond', path: 'EB Garamond' },
-          { label: 'El Messiri', path: 'El Messiri' },
-          { label: 'Fondamento', path: 'Fondamento' },
-          { label: 'Forum', path: 'Forum' },
-          { label: 'Gabriela', path: 'Gabriela' },
-          { label: 'Gilda Display', path: 'Gilda Display' },
-          { label: 'Gloria Hallelujah', path: 'Gloria Hallelujah' },
-          { label: 'Kalam', path: 'Kalam' },
-          { label: 'Kaushan Script', path: 'Kaushan Script' },
-          { label: 'Kurale', path: 'Kurale' },
-          { label: 'Lobster Two', path: 'Lobster Two' },
-          { label: 'Lobster', path: 'Lobster' },
-          { label: 'Love Ya Like A Sister', path: 'Love Ya Like A Sister' },
-          { label: 'Merienda One', path: 'Merienda One' },
-          { label: 'Merienda', path: 'Merienda' },
-          { label: 'Nothing You Could Do', path: 'Nothing You Could Do' },
-          { label: 'Signika', path: 'Signika' },
-          { label: 'Tangerine', path: 'Tangerine' },
-        ],
+        fonts,
         fontSizes: [
           { label: 'Pequeno', value: '3em' },
           { label: 'Normal', value: '4.5em' },
@@ -137,20 +162,25 @@
           { label: 'Borda 3', path: 'border-3.png' },
           { label: 'Borda 4', path: 'border-4.png' },
           { label: 'Borda 5', path: 'border-5.png' },
-          { label: 'Borda 6', path: 'border-6.png' }
+          { label: 'Borda 6', path: 'border-6.png' },
+          { label: 'Borda 7', path: 'border-7.png' },
+          { label: 'Borda 8', path: 'border-8.png' },
+          { label: 'Borda 9', path: 'border-7.png' },
         ],
         selectedFont: 'Fondamento',
-        selectedFontSize: '4.5em',
         selectedFontColor: '#ffffff',
+        selectedFontSize: '4.5em',
         selectedFrame: 'border-1.png'
       }
     },
     computed: {
       borderStyle () {
-        return `url("../assets/${this.selectedFrame}")`
+        return `url("/assets/${this.selectedFrame}")`
       },
       customStyles () {
-        const gradient = 'linear-gradient(transparent, rgba(0,0,0,.30), rgba(0,0,0,.30), transparent)';
+        const shadow = `rgba(0, 0, 0, ${this.backgroundShadowOpacity})`;
+
+        const gradient = `linear-gradient(transparent, ${shadow}, ${shadow}, transparent)`;
 
         const background = `url(${this.background})`;
 
@@ -204,6 +234,12 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
+  @import url('https://fonts.googleapis.com/css?family=Fondamento');
+
+  .cover-generator {
+    font-family: 'Fondamento';
+  }
+
   .playlist-cover {
     background-size: cover;
     background-position: center;

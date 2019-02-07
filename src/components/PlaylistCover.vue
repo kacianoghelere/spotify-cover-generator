@@ -27,6 +27,18 @@
         />
       </div>
       <div class="form-group">
+        <Label for="background-vertical-axis" text="Posição Y da imagem" />
+        <input
+          class="custom-range"
+          type="range"
+          min="0"
+          max="100"
+          step="1"
+          id="background-vertical-axis"
+          v-model="backgroundVerticalAxis"
+        />
+      </div>
+      <div class="form-group">
         <Label for="title-text" text="Texto da capa" />
         <textarea
           class="form-control"
@@ -165,7 +177,7 @@
           { label: 'Borda 6', path: 'border-6.png' },
           { label: 'Borda 7', path: 'border-7.png' },
           { label: 'Borda 8', path: 'border-8.png' },
-          { label: 'Borda 9', path: 'border-7.png' },
+          { label: 'Borda 9', path: 'border-9.png' },
         ],
         selectedFont: 'Fondamento',
         selectedFontColor: '#ffffff',
@@ -175,7 +187,7 @@
     },
     computed: {
       borderStyle () {
-        return `url("/assets/${this.selectedFrame}")`
+        return `url("./assets/${this.selectedFrame}")`
       },
       customStyles () {
         const shadow = `rgba(0, 0, 0, ${this.backgroundShadowOpacity})`;
@@ -186,7 +198,7 @@
 
         return {
           'background-image': `${this.borderStyle}, ${gradient}, ${background}`,
-          'background-position': `${this.backgroundHorizontalAxis}%`,
+          'background-position': `${this.backgroundHorizontalAxis}% ${this.backgroundVerticalAxis}%`,
           'color': `${this.selectedFontColor}`,
           'font-family': `${this.selectedFont}`,
           'font-size': `${this.selectedFontSize}`,
@@ -241,17 +253,18 @@
   }
 
   .playlist-cover {
-    background-size: cover;
-    background-position: center;
-    color: white;
-    text-shadow: 0 3px 2px rgba(black, .9);
-    font-size: 4.5em;
-    text-align: center;
-    background-color: #eee;
     align-items: center;
+    background-color: #eee;
+    background-position: center;
+    background-size: cover;
+    color: white;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    font-size: 4.5em;
     height: 500px;
+    justify-content: center;
+    text-align: center;
+    text-shadow: 0 3px 2px rgba(black, .9);
     width: 500px;
   }
 </style>

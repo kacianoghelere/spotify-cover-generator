@@ -38,6 +38,46 @@
           v-model="backgroundVerticalAxis"
         />
       </div>
+      <div class="form-group row">
+        <div class="col-12">
+          <Label for="backgroundGradient" text="Gradiente de fundo" />
+        </div>
+        <div class="col-12" id="backgroundGradient">
+          <div class="row">
+            <div class="col-6">
+              <input
+                class="form-control"
+                type="color"
+                id="font-color"
+                v-model="gradientColor1"
+              />
+            </div>
+            <div class="col-6">
+              <input
+                class="form-control"
+                type="color"
+                id="font-color"
+                v-model="gradientColor2"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <Label for="background-blend-mode" text="Mesclagem de fundos" />
+        <select
+          class="custom-select"
+          name="background-blend-mode"
+          id="background-blend-mode"
+          v-model="selectedBackgroundBlendMode"
+        >
+          <option
+            v-for="(blendMode, index) in backgroundBlendMode"
+            :key="index"
+            :value="blendMode"
+          >{{ blendMode }}</option>
+        </select>
+      </div>
       <div class="form-group">
         <Label for="title-text" text="Texto da capa" />
         <textarea
@@ -133,10 +173,12 @@
         <div
           class="playlist-cover"
           id="playlist-cover"
-          v-html="titleText"
-          :style="customStyles"
           ref="playlistCover"
-        ></div>
+        >
+          <div class="playlist-cover-border" :style="borderStyles"></div>
+          <div class="playlist-cover-text" :style="textStyles" v-html="titleText"></div>
+          <div class="playlist-cover-background" :style="backgroundStyles"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -156,10 +198,30 @@
     data () {
       return {
         background: '',
+        backgroundBlendMode: [
+          'normal',
+          'multiply',
+          'screen',
+          'overlay',
+          'darken',
+          'lighten',
+          'color-dodge',
+          'color-burn',
+          'hard-light',
+          'soft-light',
+          'difference',
+          'exclusion',
+          'hue',
+          'saturation',
+          'color',
+          'luminosity',
+        ],
         backgroundHorizontalAxis: 50,
         backgroundShadowOpacity: 0.3,
         backgroundVerticalAxis: 50,
         backgroundName: 'Selecionar',
+        gradientColor1: '#ffffff',
+        gradientColor2: '#ffffff',
         titleText: '',
         output: null,
         fonts,
@@ -179,6 +241,7 @@
           { label: 'Borda 8', path: 'border-8.png' },
           { label: 'Borda 9', path: 'border-9.png' },
         ],
+        selectedBackgroundBlendMode: 'normal',
         selectedFont: 'Fondamento',
         selectedFontColor: '#ffffff',
         selectedFontSize: '4.5em',
@@ -187,25 +250,40 @@
     },
     computed: {
       borderStyle () {
-        return `url("./assets/${this.selectedFrame}")`
+        return `url("${this.borderUrl}")`
       },
-      customStyles () {
-        const shadow = `rgba(0, 0, 0, ${this.backgroundShadowOpacity})`;
-
-        const gradient = `linear-gradient(transparent, ${shadow}, ${shadow}, transparent)`;
+      borderUrl () {
+        return `./assets/${this.selectedFrame}`
+      },
+      backgroundStyles () {
+        const gradient = `linear-gradient(${this.gradientColor1}, ${this.gradientColor2})`;
 
         const background = `url(${this.background})`;
 
         return {
-          'background-image': `${this.borderStyle}, ${gradient}, ${background}`,
+          'background-image': `${background}, ${gradient}`,
           'background-position': `${this.backgroundHorizontalAxis}% ${this.backgroundVerticalAxis}%`,
+          'background-blend-mode': `${this.selectedBackgroundBlendMode}`,
           'color': `${this.selectedFontColor}`,
           'font-family': `${this.selectedFont}`,
           'font-size': `${this.selectedFontSize}`,
         };
-      }
-    },
-    mounted () {
+      },
+      borderStyles () {
+        return { 'background-image': `${this.borderStyle}` };
+      },
+      textStyles () {
+        const shadow = `rgba(0, 0, 0, ${this.backgroundShadowOpacity})`;
+
+        const textGradient = `linear-gradient(transparent, ${shadow}, ${shadow}, transparent)`;
+
+        return {
+          'background-image': textGradient,
+          'color': `${this.selectedFontColor}`,
+          'font-family': `${this.selectedFont}`,
+          'font-size': `${this.selectedFontSize}`,
+        };
+      },
     },
     methods: {
       downloadURI (uri, name) {
@@ -253,18 +331,40 @@
   }
 
   .playlist-cover {
-    align-items: center;
-    background-color: #eee;
-    background-position: center;
-    background-size: cover;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    font-size: 4.5em;
     height: 500px;
-    justify-content: center;
+    position: relative;
     text-align: center;
-    text-shadow: 0 3px 2px rgba(black, .9);
     width: 500px;
+
+    .playlist-cover-background,
+    .playlist-cover-border,
+    .playlist-cover-text {
+      height: 100%;
+      position: absolute;
+      width: 100%;
+      z-index: 1;
+    }
+
+    .playlist-cover-background {
+      background-color: #eee;
+      background-position: center;
+      background-size: cover;
+    }
+
+    .playlist-cover-text {
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      font-size: 4.5em;
+      justify-content: center;
+      text-shadow: 0 3px 2px rgba(black, .9);
+      z-index: 2;
+    }
+
+    .playlist-cover-border {
+      background-position: center;
+      background-size: cover;
+      z-index: 3;
+    }
   }
 </style>

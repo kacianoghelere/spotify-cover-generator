@@ -63,7 +63,7 @@
           </div>
         </div>
       </div>
-      <div class="form-group">
+      <!-- <div class="form-group">
         <Label for="background-blend-mode" text="Mesclagem de fundos" />
         <select
           class="custom-select"
@@ -77,7 +77,7 @@
             :value="blendMode"
           >{{ blendMode }}</option>
         </select>
-      </div>
+      </div> -->
       <div class="form-group">
         <Label for="title-text" text="Texto da capa" />
         <textarea
@@ -86,6 +86,22 @@
           id="title-text"
           v-model="titleText"
         ></textarea>
+      </div>
+      <div class="form-group">
+        <Label for="text-position" text="Posição do Texto" />
+        <select
+          class="custom-select"
+          name="text-position"
+          id="text-position"
+          v-model="textPosition"
+        >
+          <option
+            v-for="(position, index) in textPositions"
+            :key="index"
+            :value="position.value"
+            :label="position.label"
+          ></option>
+        </select>
       </div>
       <div class="form-group">
         <Label for="font-family" text="Fonte do Texto" />
@@ -240,12 +256,20 @@
           { label: 'Borda 7', path: 'border-7.png' },
           { label: 'Borda 8', path: 'border-8.png' },
           { label: 'Borda 9', path: 'border-9.png' },
+          { label: 'Borda 10', path: 'border-10.png' },
+          { label: 'Borda 11', path: 'border-11.png' },
         ],
         selectedBackgroundBlendMode: 'normal',
         selectedFont: 'Fondamento',
         selectedFontColor: '#ffffff',
         selectedFontSize: '4.5em',
-        selectedFrame: 'border-1.png'
+        selectedFrame: 'border-1.png',
+        textPosition: 'center',
+        textPositions: [
+          { label: 'Superior', value: 'flex-start' },
+          { label: 'Centro', value: 'center' },
+          { label: 'Inferior', value: 'flex-end' }
+        ],
       }
     },
     computed: {
@@ -282,8 +306,9 @@
           'color': `${this.selectedFontColor}`,
           'font-family': `${this.selectedFont}`,
           'font-size': `${this.selectedFontSize}`,
+          'justify-content': `${this.textPosition}`
         };
-      },
+      }
     },
     methods: {
       downloadURI (uri, name) {
@@ -356,7 +381,6 @@
       display: flex;
       flex-direction: column;
       font-size: 4.5em;
-      justify-content: center;
       text-shadow: 0 3px 2px rgba(black, .9);
       z-index: 2;
     }
